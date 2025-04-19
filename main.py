@@ -5,7 +5,7 @@ import threading
 import random
 import websocket
 from datetime import datetime
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore, Style
 
 init(autoreset=True)
 
@@ -69,6 +69,7 @@ else:
     exit()
 
 def format_proxy(proxy_string):
+    """Format the proxy string into the correct dictionary format."""
     try:
         proxy_type, address = proxy_string.split("://")
         
@@ -93,6 +94,7 @@ def format_proxy(proxy_string):
         return None, None
 
 def authenticate(proxy):
+    """Authenticate using the given proxy and return the API token."""
     proxy_config, ip_address = format_proxy(proxy)
     if not proxy_config:
         return None, None
@@ -114,10 +116,10 @@ def authenticate(proxy):
         print(f"{Fore.LIGHTCYAN_EX}[{datetime.now().strftime('%H:%M:%S')}]{Fore.GREEN} Login successful {Fore.MAGENTA}|{Fore.LIGHTYELLOW_EX} {ip_address} {Style.RESET_ALL}")
         return api_token, ip_address
     except requests.RequestException as err:
-        print(f"{Fore.LIGHTCYAN_EX}[{datetime.now().strftime('%H:%M:%S')}]{Fore.RED} Login failed {Fore.MAGENTA}|{Fore.LIGHTYELLOW_EX} {ip_address}: {err}{Style.RESET_ALL}")
         return None, None
 
 def send_uptime_report(api_token, proxy):
+    """Send uptime report to the Blockmesh server."""
     proxy_config, _ = format_proxy(proxy)
     if not proxy_config:
         return
@@ -136,6 +138,7 @@ def send_uptime_report(api_token, proxy):
         print(f"{Fore.LIGHTCYAN_EX}[{datetime.now().strftime('%H:%M:%S')}]{Fore.RED} Failed to PING {Fore.MAGENTA}| {err}{Style.RESET_ALL}")
 
 def process_proxy(proxy):
+    """Process each proxy in a separate thread."""
     first_run = True
     while True:
         current_time = time.time()
